@@ -14,8 +14,13 @@ const personSchema = new mongoose.Schema({
   },
   number: {
     type: String,
-    minLength: 8,
     required: true,
+    validate: {
+      validator: function (v) {
+        return /^\d{2,3}-\d+$/.test(v) && v.length >= 8;
+      },
+      message: (props) => `${props.value} is not a valid phone number`,
+    },
   },
 });
 
@@ -34,6 +39,7 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body"),
 );
 app.use(express.json());
+app.use(express.static("dist"));
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((persons) => res.json(persons));

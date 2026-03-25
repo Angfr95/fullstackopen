@@ -45,12 +45,16 @@ const App = () => {
         updatePerson(elementFound.id, {
           ...elementFound,
           number: newNumber,
-        }).then((updated) => {
-          setPersons(
-            persons.map((p) => (p.id === elementFound.id ? updated : p)),
-          );
-          notify(`Changed number of ${elementFound.name}`, "green");
-        });
+        })
+          .then((updated) => {
+            setPersons(
+              persons.map((p) => (p.id === elementFound.id ? updated : p)),
+            );
+            notify(`Changed number of ${elementFound.name}`, "green");
+          })
+          .catch((error) => {
+            notify(error.response.data.error, "red");
+          });
       }
     } else {
       const personToAdd = {
@@ -58,12 +62,16 @@ const App = () => {
         number: newNumber,
         id: String(persons.length + 1),
       };
-      addPersons(personToAdd).then((added) => {
-        setPersons(persons.concat(added));
-        setNewName("");
-        setNewNumber("");
-        notify(`Added ${personToAdd.name}`, "green");
-      });
+      addPersons(personToAdd)
+        .then((added) => {
+          setPersons(persons.concat(added));
+          setNewName("");
+          setNewNumber("");
+          notify(`Added ${personToAdd.name}`, "green");
+        })
+        .catch((error) => {
+          notify(error.response.data.error, "red");
+        });
     }
   };
 
